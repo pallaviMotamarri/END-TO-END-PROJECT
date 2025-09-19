@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const AdminHandleAuctions = () => {
   const [auctions, setAuctions] = useState([]);
@@ -22,7 +22,7 @@ const AdminHandleAuctions = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('http://localhost:5001/api/admin/handle-auctions');
+  const res = await api.get('/admin/handle-auctions');
       setAuctions(res.data || []);
     } catch (err) {
       setError('Failed to fetch auctions. Please check your backend or database.');
@@ -33,7 +33,7 @@ const AdminHandleAuctions = () => {
 
   const fetchAuctionRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/admin/auction-requests');
+  const res = await api.get('/admin/auction-requests');
       setAuctionRequests(res.data.requests || []);
     } catch (err) {
       console.error('Failed to fetch auction requests:', err);
@@ -52,7 +52,7 @@ const AdminHandleAuctions = () => {
       }
       
       console.log('Fetching payment requests...');
-      const res = await axios.get('http://localhost:5001/api/admin/payments/payment-requests', {
+      const res = await api.get('/admin/payments/payment-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -71,7 +71,7 @@ const AdminHandleAuctions = () => {
     if (!window.confirm('Are you sure you want to stop this auction?')) return;
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5001/api/admin/handle-auctions/${id}/stop`);
+  await api.put(`/admin/handle-auctions/${id}/stop`);
       fetchAuctions();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to stop auction.');
@@ -83,7 +83,7 @@ const AdminHandleAuctions = () => {
     if (!window.confirm('Continue this stopped auction?')) return;
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5001/api/admin/handle-auctions/${id}/continue`);
+  await api.put(`/admin/handle-auctions/${id}/continue`);
       fetchAuctions();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to continue auction.');
@@ -95,7 +95,7 @@ const AdminHandleAuctions = () => {
     if (!window.confirm('Delete this auction?')) return;
     setLoading(true);
     try {
-      await axios.delete(`http://localhost:5001/api/admin/handle-auctions/${id}`);
+  await api.delete(`/admin/handle-auctions/${id}`);
       fetchAuctions();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to delete auction.');
@@ -107,7 +107,7 @@ const AdminHandleAuctions = () => {
     if (!window.confirm('Approve this reserve auction request? This will create the auction and make it live.')) return;
     setLoading(true);
     try {
-      const response = await axios.post(`http://localhost:5001/api/admin/auction-requests/${requestId}/approve`, {
+  const response = await api.post(`/admin/auction-requests/${requestId}/approve`, {
         adminNotes: 'Approved by admin'
       });
       alert('Auction request approved successfully! The auction has been created.');
@@ -125,7 +125,7 @@ const AdminHandleAuctions = () => {
     
     setLoading(true);
     try {
-      await axios.post(`http://localhost:5001/api/admin/auction-requests/${requestId}/reject`, {
+  await api.post(`/admin/auction-requests/${requestId}/reject`, {
         adminNotes: reason
       });
       alert('Auction request rejected successfully.');
@@ -192,7 +192,7 @@ const AdminHandleAuctions = () => {
     
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5001/api/admin/migrate-reserve-auctions');
+  const response = await api.post('/admin/migrate-reserve-auctions');
       alert(`Migration completed! ${response.data.migrated} auctions migrated to pending requests.`);
       fetchAuctionRequests();
       fetchAuctions();
@@ -211,7 +211,7 @@ const AdminHandleAuctions = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      await axios.post(`http://localhost:5001/api/admin/payments/payment-requests/${paymentRequestId}/approve`, 
+      await api.post(`/admin/payments/payment-requests/${paymentRequestId}/approve`, 
         { adminNotes }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -235,7 +235,7 @@ const AdminHandleAuctions = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      await axios.post(`http://localhost:5001/api/admin/payments/payment-requests/${paymentRequestId}/reject`, 
+      await api.post(`/admin/payments/payment-requests/${paymentRequestId}/reject`, 
         { adminNotes }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -257,7 +257,7 @@ const AdminHandleAuctions = () => {
     const normalizedPath = screenshotUrl.replace(/\\/g, '/');
     const fullImageUrl = normalizedPath.startsWith('http') 
       ? normalizedPath 
-      : `http://localhost:5001/${normalizedPath}`;
+      : `${process.env.REACT_APP_API_URL?.replace(/\/api$/, '') || ''}/${normalizedPath}`;
     
     console.log('Original screenshot URL:', screenshotUrl);
     console.log('Full image URL:', fullImageUrl);
