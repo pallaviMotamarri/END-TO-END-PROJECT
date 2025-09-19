@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import './admin.css';
 
 export default function AdminForgotPassword() {
@@ -13,7 +13,7 @@ export default function AdminForgotPassword() {
     setError('');
     setMessage('');
     try {
-      const res = await axios.post('http://localhost:5001/api/admin/auth/reset-password', { email, newPassword });
+  const res = await api.post('/admin/auth/reset-password', { email, newPassword });
       setMessage(res.data.message);
     } catch (err) {
       setError(err.response?.data?.message || 'Password reset failed');
