@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Search, Users, UserCheck, UserX, Edit3, Shield, ShieldOff, Mail, Phone, Crown } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const PAGE_SIZE = 10;
 
@@ -33,7 +33,7 @@ const AdminHandleUsers = () => {
     setLoading(true);
     try {
       // Replace with your backend API endpoint
-      const res = await axios.get(`http://localhost:5001/api/admin/users`, {
+  const res = await api.get(`/admin/users`, {
         params: { search: search.trim(), page, pageSize: PAGE_SIZE }
       });
       setUsers(res.data.users);
@@ -74,7 +74,7 @@ const AdminHandleUsers = () => {
         isEmailVerified: !!form.isEmailVerified,
         isPhoneVerified: !!form.isPhoneVerified,
       };
-      const res = await axios.put(`http://localhost:5001/api/admin/users/${editUser._id}`, payload);
+  const res = await api.put(`/admin/users/${editUser._id}`, payload);
       if (res.status === 200) {
         alert('Profile updated successfully');
       } else {
@@ -91,7 +91,7 @@ const AdminHandleUsers = () => {
   const handleSuspendToggle = async (user) => {
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5001/api/admin/users/${user._id}/${user.suspended ? 'unsuspend' : 'suspend'}`);
+  await api.put(`/admin/users/${user._id}/${user.suspended ? 'unsuspend' : 'suspend'}`);
       fetchUsers();
     } catch (err) {
       alert('Failed to update user status');
