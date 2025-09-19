@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Crown, TrendingUp, Users, Award, Plus, Minus, Edit3, Star } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const PAGE_SIZE = 10;
 
@@ -25,7 +25,7 @@ const AdminHandleCrownScore = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5001/api/admin/users`, {
+  const res = await api.get(`/admin/users`, {
         params: { page, pageSize: PAGE_SIZE }
       });
       setUsers(res.data.users);
@@ -66,7 +66,7 @@ const AdminHandleCrownScore = () => {
   const updateUserScore = async (userId, newScore) => {
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5001/api/admin/users/${userId}`, { 
+      await api.put(`/admin/users/${userId}`, { 
         crownScore: newScore 
       });
       fetchUsers();
@@ -79,7 +79,7 @@ const AdminHandleCrownScore = () => {
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5001/api/admin/users/${editUser._id}`, { 
+      await api.put(`/admin/users/${editUser._id}`, { 
         crownScore: form.crownScore 
       });
       setEditUser(null);
