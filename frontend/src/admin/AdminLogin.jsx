@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 import './admin.css';
 
@@ -14,7 +14,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post('http://localhost:5001/api/admin/auth/login', form);
+  const res = await api.post('/admin/auth/login', form);
       localStorage.setItem('adminToken', res.data.token);
       navigate('/admin/dashboard');
     } catch (err) {
