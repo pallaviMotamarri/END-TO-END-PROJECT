@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import {
   LayoutDashboard,
   Users,
@@ -54,10 +54,10 @@ const AdminDashboard = () => {
       setLoading(true);
       
       // Fetch total users count
-      const usersResponse = await axios.get('http://localhost:5001/api/admin/users/count');
+  const usersResponse = await api.get('/admin/users/count');
       
       // Fetch active auctions count
-      const auctionsResponse = await axios.get('http://localhost:5001/api/admin/auctions/active-count');
+  const auctionsResponse = await api.get('/admin/auctions/active-count');
       
       // You can add more API calls for revenue and payments later
       setStats({
